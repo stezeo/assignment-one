@@ -1,16 +1,18 @@
-#include<io.h>
+
+#include <io.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <stdio.h>
+
 #include <time.h>
 #include <string.h>
 
-#define BUF_SIZE	6000
-#define ARRAY_SIZE	4000
+#define BUF_SIZE	8
+
+
 
 int	ft_intcmp(int a, int b)
 {
@@ -50,7 +52,6 @@ void	ft_sort(int last_i, int ary[])
 int	getnum(char bf[], int ary[])
 {
 	int i;
-	//char *str;
 	int i1;
 	int i2;
 	int k;
@@ -62,9 +63,9 @@ int	getnum(char bf[], int ary[])
 	{
 		i1 = i;
 		i2 = 0;
-		if (bf[i] >= '0' && bf[i] <= '9')
+		if (bf[i] >= '0' && bf[i] <= '9' || bf[i] == '-')
 		{
-			while (bf[i] >= '0' && bf[i] <= '9')
+			while (bf[i] >= '0' && bf[i] <= '9' || bf[i] == '-')
 			{
 				i++;
 			}
@@ -91,34 +92,50 @@ int	getnum(char bf[], int ary[])
 }
 
 
-int	main(int argc, char **argv)
+
+int	main(void)
 {
 	int	rd;
-	//int	rd2;
+	
 	int	fd;
-	char	bf[BUF_SIZE + 1];
+	char	bf[BUF_SIZE];
 	int	i;
-	int	ary[ARRAY_SIZE];
+	int read_count = 0;
+
 
 	i = 0;
-	if (argc < 2)
-		printf("File name is missing.\n");
-	else if (argc > 2)
-		printf("Too many arguments.\n");
-	else
-	{
-	
-		fd = _open(argv[1], O_RDONLY);
-		if (fd != -1)
-		{
-			rd = _read(fd, bf, BUF_SIZE);
-		}
-		bf[rd] = '\0';
 
+
+	//just for getting the size of the file in order to alloce memory
+	fd = open("sort.txt", O_RDONLY);
+	if (fd != -1)
+	{
+		while ((rd = read(fd, bf, BUF_SIZE)))
+		{
+			read_count += rd;
+		}
 	}
+	close(fd);
+
+	// reading to the allocated memory
+	
+	char t = 't';
+	char *bf2 = (char *)malloc(read_count  * sizeof(t));
+	fd = open("sort.txt", O_RDONLY);
+	if (fd != -1)
+	{
+		rd = read(fd, bf2, read_count);
+	}
+	bf2[rd] = '\0';
+	close(fd);
+
+
+	int	*ary = (int *)malloc(read_count * sizeof(rd));
+	
+
 
 	char last_index;
-	last_index = getnum(bf, ary);
+	last_index = getnum(bf2, ary);
 	ft_sort(last_index, ary);
 	int j = 0;
 	while (j < last_index)
@@ -139,5 +156,3 @@ int	main(int argc, char **argv)
 	}
 	printf("\n");
 	return (0);
-
-}
